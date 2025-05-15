@@ -82,18 +82,31 @@
 
         const info = {
           ip: ipData?.ip || "نامشخص",
+          
           location: `${ipData?.city || "-"}, ${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
+          
           org: ipData?.org || "نامشخص",
+          
           timezone: ipData?.timezone || "نامشخص",
+          
           ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "Asia/Tehran" }),
+          
           local_time: new Date().toLocaleString("fa-IR"),
+          
           os: `${browser.os.name} ${browser.os.versionName}`,
+          
           browser: `${browser.browser.name} ${browser.browser.version}`,
+          
           device: browser.platform.type || "نامشخص",
+          
           screen: `${screen.width}x${screen.height}`,
+          
           battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
+          
           charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
+          
           language: navigator.language,
+          
           referrer: document.referrer || "مستقیم"
         };
 
