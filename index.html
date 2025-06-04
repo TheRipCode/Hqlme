@@ -484,6 +484,27 @@
             margin-bottom: 20px;
         }
 
+        .ip-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .ip-info h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ip-info p {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
         /* Account Type Section */
         .account-types {
             display: flex;
@@ -889,6 +910,93 @@
                 font-size: 1rem;
             }
         }
+        
+        /* New Verification Animation */
+        .verification-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 17, 40, 0.95);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .verification-animation.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .code-display {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            margin-bottom: 30px;
+            animation: codeAppear 0.5s ease-out, codeGlow 2s infinite alternate;
+        }
+        
+        @keyframes codeAppear {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes codeGlow {
+            0% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.6); }
+            100% { text-shadow: 0 0 30px rgba(255, 215, 0, 1); }
+        }
+        
+        .countdown-timer {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 20px;
+        }
+        
+        .timer-circle {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .timer-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .timer-background {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 10;
+        }
+        
+        .timer-progress {
+            fill: none;
+            stroke: var(--secondary);
+            stroke-width: 10;
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -911,6 +1019,19 @@
             </button>
         </div>
     </header>
+    
+    <!-- Verification Animation -->
+    <div class="verification-animation" id="verificationAnimation">
+        <div class="code-display" id="verificationCodeDisplay">12345</div>
+        <div class="timer-circle">
+            <svg class="timer-svg" viewBox="0 0 200 200">
+                <circle class="timer-background" cx="100" cy="100" r="90"></circle>
+                <circle class="timer-progress" cx="100" cy="100" r="90" id="timerProgress"></circle>
+            </svg>
+            <div class="timer-text" id="timerText">5</div>
+        </div>
+        <p class="countdown-timer">Verification code will be shown for 5 seconds</p>
+    </div>
     
     <!-- Main Content -->
     <div class="container">
@@ -991,6 +1112,15 @@
                     <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--secondary); margin-bottom: 20px;"></i>
                     <h3>Secure Connection!</h3>
                     <p>You're securely connected via VPN. You may proceed.</p>
+                    
+                    <div class="ip-info">
+                        <h3><i class="fas fa-info-circle"></i> Connection Information</h3>
+                        <p><strong>Country:</strong> <span id="country">United States</span></p>
+                        <p><strong>City:</strong> <span id="city">New York</span></p>
+                        <p><strong>ISP:</strong> <span id="isp">Google Cloud</span></p>
+                        <p><strong>VPN Status:</strong> <span id="vpnStatus" style="color: var(--secondary);">Active</span></p>
+                    </div>
+                    
                     <button class="main-btn" style="margin-top: 30px;" id="continueBtn">
                         Continue <i class="fas fa-arrow-right"></i>
                     </button>
@@ -1432,48 +1562,37 @@
             document.getElementById('iranWarning').style.display = 'none';
             document.getElementById('vpnSuccess').style.display = 'none';
             
-            // Simulate geolocation API call with fallback
-            setTimeout(() => {
-                document.getElementById('vpnChecking').style.display = 'none';
-                
-                // Use browser geolocation API for precise location
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            // This is a simulation - in production you would use a geolocation API
-                            // For demo, we'll simulate that all locations are safe except Iran
-                            const isIran = Math.random() > 0.7; // 30% chance of being in Iran
-                            
-                            if (isIran) {
-                                document.getElementById('iranWarning').style.display = 'block';
-                            } else {
-                                document.getElementById('vpnSuccess').style.display = 'block';
-                            }
-                        },
-                        (error) => {
-                            // If geolocation fails, use timezone as fallback
-                            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                            const isIranianTimezone = timezone.includes('Tehran') || timezone.includes('Iran');
-                            
-                            if (isIranianTimezone) {
-                                document.getElementById('iranWarning').style.display = 'block';
-                            } else {
-                                document.getElementById('vpnSuccess').style.display = 'block';
-                            }
+            // Use ipinfo.io API to get user's location
+            fetch('https://ipinfo.io/json?token=YOUR_IPINFO_TOKEN')
+                .then(response => response.json())
+                .then(data => {
+                    setTimeout(() => {
+                        document.getElementById('vpnChecking').style.display = 'none';
+                        
+                        // Display location information
+                        document.getElementById('country').textContent = data.country || 'Unknown';
+                        document.getElementById('city').textContent = data.city || 'Unknown';
+                        document.getElementById('isp').textContent = data.org || 'Unknown';
+                        
+                        // Check if user is in Iran
+                        if (data.country === 'IR') {
+                            document.getElementById('vpnStatus').textContent = 'Inactive';
+                            document.getElementById('vpnStatus').style.color = '#E53E3E';
+                            document.getElementById('iranWarning').style.display = 'block';
+                        } else {
+                            document.getElementById('vpnStatus').textContent = 'Active';
+                            document.getElementById('vpnStatus').style.color = '#2EC4B6';
+                            document.getElementById('vpnSuccess').style.display = 'block';
                         }
-                    );
-                } else {
-                    // Fallback for browsers that don't support geolocation
-                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const isIranianTimezone = timezone.includes('Tehran') || timezone.includes('Iran');
-                    
-                    if (isIranianTimezone) {
-                        document.getElementById('iranWarning').style.display = 'block';
-                    } else {
+                    }, 2000);
+                })
+                .catch(error => {
+                    // Fallback if API fails
+                    setTimeout(() => {
+                        document.getElementById('vpnChecking').style.display = 'none';
                         document.getElementById('vpnSuccess').style.display = 'block';
-                    }
-                }
-            }, 2000);
+                    }, 2000);
+                });
         }
         
         // Recheck VPN button
@@ -1530,8 +1649,14 @@
             // Show user email in verification section
             document.getElementById('userEmail').textContent = email;
             
-            showSection('verification-section');
+            // Generate and display verification code with animation
             generateCode();
+            
+            // Show verification animation
+            document.getElementById('verificationAnimation').classList.add('active');
+            
+            // Start countdown for animation
+            startVerificationCountdown();
         });
         
         // Verification Code
@@ -1542,7 +1667,36 @@
             for (let i = 0; i < 5; i++) {
                 verificationCode += Math.floor(Math.random() * 10);
             }
-            alert('Verification code has been sent: ' + verificationCode);
+            document.getElementById('verificationCodeDisplay').textContent = verificationCode;
+        }
+        
+        // Verification Animation Countdown
+        function startVerificationCountdown() {
+            let seconds = 5;
+            const timerText = document.getElementById('timerText');
+            const timerProgress = document.getElementById('timerProgress');
+            
+            // Set initial values
+            timerText.textContent = seconds;
+            timerProgress.style.strokeDashoffset = '565';
+            
+            const timer = setInterval(() => {
+                seconds--;
+                timerText.textContent = seconds;
+                
+                // Calculate progress
+                const progress = (5 - seconds) / 5;
+                const dashoffset = 565 * (1 - progress);
+                timerProgress.style.strokeDashoffset = dashoffset;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    
+                    // Hide animation and show verification section
+                    document.getElementById('verificationAnimation').classList.remove('active');
+                    showSection('verification-section');
+                }
+            }, 1000);
         }
         
         // Auto move to next input field
